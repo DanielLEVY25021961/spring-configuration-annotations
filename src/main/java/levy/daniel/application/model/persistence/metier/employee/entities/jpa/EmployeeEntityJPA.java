@@ -1,4 +1,4 @@
-package levy.daniel.application.model.persistence.metier.employee.entities.jpa.impl;
+package levy.daniel.application.model.persistence.metier.employee.entities.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

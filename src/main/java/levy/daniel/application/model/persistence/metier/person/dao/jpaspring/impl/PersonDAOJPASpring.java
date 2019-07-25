@@ -1,4 +1,4 @@
-package levy.daniel.application.model.persistence.metier.employee.dao.jpaspring.impl;
+package levy.daniel.application.model.persistence.metier.person.dao.jpaspring.impl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,52 +15,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
-import levy.daniel.application.model.metier.employee.IEmployee;
+import levy.daniel.application.model.metier.person.IPerson;
 import levy.daniel.application.model.persistence.daoexceptions.GestionnaireDaoException;
-import levy.daniel.application.model.persistence.metier.employee.EmployeeConvertisseurMetierEntity;
-import levy.daniel.application.model.persistence.metier.employee.IEmployeeDAO;
-import levy.daniel.application.model.persistence.metier.employee.entities.jpa.EmployeeEntityJPA;
+import levy.daniel.application.model.persistence.metier.person.IPersonDAO;
+import levy.daniel.application.model.persistence.metier.person.PersonConvertisseurMetierEntity;
+import levy.daniel.application.model.persistence.metier.person.entities.jpa.PersonEntityJPA;
 
 /**
- * INTERFACE EmployeeDAOJPASpring :<br/>
- * DAO (Data Access Object) JPA avec SPRING <i>CONCRET</i> 
- * pour les {@link EmployeeEntityJPA}.<br/>
- *  
- * <p>
- * <span style="text-decoration: underline;">CONCEPT 
- * CONCERNE PAR CE DAO</span>
- * </p>
- * 
- * <p>
- * <b>{@link IEmployee}</b> modélise un <i>concept</i> 
- * de <b>Localisation</b> pour les SECTIONS DE TRAFIC HIT.
- * </p>
- * 
- * <p>
- * <span style="text-decoration: underline;">DESCRIPTION DE 
- * DAO</span>
- * </p>
- * <ul>
- * <li>DAO <b>CONCRET</b> pour les <b>{@link IEmployee}</b>.</li>
- * <li>
- * Implémente l'interface <b>IEmployeeDAO</b>.
- * </li>
- * <li>
- * DAO pour serializer des ENTITIES JPA {@link EmployeeEntityJPA} 
- * lors de l'utilisation de Java Persistence API (JPA)
- * pour la persistence dans un contexte SPRING.
- * </li>
- * </ul>
- * 
- * <p>
- * <span style="text-decoration: underline;">IMPLEMENTATION DES DAO</span>
- * </p>
- * <ul>
- * <li>
- * <img src="../../../../../../../../../../../../../../../javadoc/images/implementation_Employee_DAO_JpaSpring.png" 
- * alt="implémentation des DAOs EmployeeEntityJPA JPA SPRING" border="1" align="center" />
- * </li>
- * </ul>
+ * CLASSE PersonDAOJPASpring :<br/>
+ * .<br/>
+ * <br/>
  *
  * - Exemple d'utilisation :<br/>
  *<br/>
@@ -72,21 +36,21 @@ import levy.daniel.application.model.persistence.metier.employee.entities.jpa.Em
  * <br/>
  *
  *
- * @author adminLocal Lévy
+ * @author dan Lévy
  * @version 1.0
- * @since 13 nov. 2018
+ * @since 25 juil. 2019
  *
  */
-@Repository(value="EmployeeDAOJPASpring")
-public class EmployeeDAOJPASpring implements IEmployeeDAO {
+@Repository(value="PersonDAOJPASpring")
+public class PersonDAOJPASpring implements IPersonDAO {
 
 	// ************************ATTRIBUTS************************************/
 	
 	/**
-	 * "Classe EmployeeDAOJPASpring".<br/>
+	 * "Classe PersonDAOJPASpring".<br/>
 	 */
-	public static final String CLASSE_EMPLOYEEDAO_JPA_SPRING 
-		= "Classe EmployeeDAOJPASpring";
+	public static final String CLASSE_PERSONDAO_JPA_SPRING 
+		= "Classe PersonDAOJPASpring";
 	
 	/**
 	 * " - ".
@@ -108,12 +72,12 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 
 	
 	/**
-	 * "select employee from 
-	 * EmployeeEntityJPA as employee ".<br/>
+	 * "select person from 
+	 * PersonEntityJPA as person ".<br/>
 	 */
 	public static final String SELECT_OBJET 
-		= "select employee from "
-				+ "EmployeeEntityJPA as employee ";
+		= "select person from "
+				+ "PersonEntityJPA as person ";
 	
 	/**
 	 * "STOCKAGE IMPOSSIBLE : l'Objet métier à créer est null".
@@ -153,13 +117,14 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	private transient List<String> messagesErrorUtilisateurList 
 		= new ArrayList<String>(); 
 	
+
 	/**
 	 * LOG : Log : 
 	 * Logger pour Log4j (utilisant commons-logging).
 	 */
 	@SuppressWarnings("unused")
 	private static final Log LOG 
-		= LogFactory.getLog(EmployeeDAOJPASpring.class);
+		= LogFactory.getLog(PersonDAOJPASpring.class);
 
 	// *************************METHODES************************************/
 	
@@ -167,7 +132,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 /**
 	 * CONSTRUCTEUR D'ARITE NULLE.<br/>
 	 */
-	public EmployeeDAOJPASpring() {
+	public PersonDAOJPASpring() {
 		super();
 	} // Fin de CONSTRUCTEUR D'ARITE NULLE.________________________________
 	
@@ -181,13 +146,13 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 * - retourne false si pObject == null.<br/>
 	 * <br/>
 	 *
-	 * @param pObject : IEmployee : Objet Métier.
+	 * @param pObject : IPerson : Objet Métier.
 	 * 
 	 * @return : boolean : 
 	 * true si les champs obligatoires sont tous remplis.<br/>
 	 */
 	private boolean champsObligatoiresRemplis(
-				final IEmployee pObject) {
+				final IPerson pObject) {
 		
 		/* retourne false si pObject == null. */
 		if (pObject == null) {
@@ -221,7 +186,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 * @throws Exception
 	 */
 	private Query fournirRequeteEgaliteMetier(
-			final IEmployee pObject) throws Exception {
+			final IPerson pObject) throws Exception {
 		
 		/* REQUETE HQL PARMETREE. */
 		String requeteString = null;
@@ -256,8 +221,8 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public IEmployee create(
-			final IEmployee pObject) throws Exception {
+	public IPerson create(
+			final IPerson pObject) throws Exception {
 
 		/* Cas où this.entityManager == null. */
 		if (this.entityManager == null) {
@@ -310,13 +275,13 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		} // Fin de DOUBLON.___________________________________
 		
 
-		IEmployee persistentObject = null;
+		IPerson persistentObject = null;
 
 		try {
 			
 			/* conversion de l'OBJET METIER en ENTITY. */
-			final EmployeeEntityJPA entity 
-				= EmployeeConvertisseurMetierEntity
+			final PersonEntityJPA entity 
+				= PersonConvertisseurMetierEntity
 						.convertirObjetMetierEnEntityJPA(pObject);
 
 			/* ***************** */
@@ -325,7 +290,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 
 			/* conversion de l'ENTITY en OBJET METIER. */
 			persistentObject 
-				= EmployeeConvertisseurMetierEntity
+				= PersonConvertisseurMetierEntity
 					.convertirEntityJPAEnObjetMetier(entity);
 
 		}
@@ -339,7 +304,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 							, "méthode create(object)", e);
 
 		}
@@ -356,8 +321,8 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public IEmployee createOrRetrieve(
-			final IEmployee pEntity) throws Exception {
+	public IPerson createOrRetrieve(
+			final IPerson pEntity) throws Exception {
 
 		/* instancie une nouvelle liste à chaque appel de la méthode. */
 		this.messagesErrorUtilisateurList = new ArrayList<String>();
@@ -376,7 +341,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		/* retourne l'objet déjà persisté si pObject est un doublon. */
 		if (this.exists(pEntity)) {
 			
-			return EmployeeConvertisseurMetierEntity
+			return PersonConvertisseurMetierEntity
 					.convertirObjetMetierEnEntityJPA(
 							this.retrieve(pEntity));
 			
@@ -397,7 +362,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		} // Fin de CHAMPS OBLIGATOIRES.______________________________
 		
 
-		IEmployee persistentObject = null;
+		IPerson persistentObject = null;
 
 		/* Cas où this.entityManager == null. */
 		if (this.entityManager == null) {
@@ -416,15 +381,15 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 
 		try {
 			
-			EmployeeEntityJPA entity = null;
+			PersonEntityJPA entity = null;
 			
 			/* conversion de l'OBJET METIER en ENTITY. */
-			if (!(pEntity instanceof EmployeeEntityJPA)) {
+			if (!(pEntity instanceof PersonEntityJPA)) {
 				entity 
-				= EmployeeConvertisseurMetierEntity
+				= PersonConvertisseurMetierEntity
 						.convertirObjetMetierEnEntityJPA(pEntity);
 			} else {
-				entity = (EmployeeEntityJPA) pEntity;
+				entity = (PersonEntityJPA) pEntity;
 			}
 			
 
@@ -446,7 +411,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 							, "méthode create(object)", e);
 
 		}
@@ -463,7 +428,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 */
 	@Override
 	public void persist(
-			final IEmployee pObject) throws Exception {
+			final IPerson pObject) throws Exception {
 		
 		/* ne fait rien si pObject == null. */
 		if (pObject == null) {
@@ -497,8 +462,8 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		}
 
 		/* conversion de l'OBJET METIER en ENTITY. */
-		final EmployeeEntityJPA entity = 
-				EmployeeConvertisseurMetierEntity
+		final PersonEntityJPA entity = 
+				PersonConvertisseurMetierEntity
 					.convertirObjetMetierEnEntityJPA(pObject);
 
 		try {
@@ -518,7 +483,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 							, "méthode persist(object)", e);
 
 		}
@@ -532,7 +497,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 */
 	@Override
 	public Long createReturnId(
-			final IEmployee pObject) throws Exception {
+			final IPerson pObject) throws Exception {
 		
 		/* retourne null si pObject == null. */
 		if (pObject == null) {
@@ -562,11 +527,11 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		
 		
 		/* conversion de l'OBJET METIER en ENTITY. */
-		final EmployeeEntityJPA entity = 
-				EmployeeConvertisseurMetierEntity
+		final PersonEntityJPA entity = 
+				PersonConvertisseurMetierEntity
 					.convertirObjetMetierEnEntityJPA(pObject);
 		
-		IEmployee persistentObject = null;
+		IPerson persistentObject = null;
 		
 		try {
 			
@@ -576,7 +541,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			
 			/* conversion de l'ENTITY en OBJET METIER. */
 			persistentObject 
-				= EmployeeConvertisseurMetierEntity
+				= PersonConvertisseurMetierEntity
 				.convertirEntityJPAEnObjetMetier(entity);
 
 		}
@@ -590,7 +555,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 							, "méthode createReturnId(object)", e);
 
 		}
@@ -610,8 +575,8 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Iterable<IEmployee> saveIterable(
-			final Iterable<IEmployee> pList) 
+	public Iterable<IPerson> saveIterable(
+			final Iterable<IPerson> pList) 
 					throws Exception {
 
 		/* retourne null si pList == null. */
@@ -630,21 +595,21 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		}
 		
 		/* conversion de le liste de MODEL en liste d'ENTITIES. */
-		final List<EmployeeEntityJPA> listeEntities 
-			= EmployeeConvertisseurMetierEntity
+		final List<PersonEntityJPA> listeEntities 
+			= PersonConvertisseurMetierEntity
 				.convertirListModelEnEntitiesJPA(pList);
 		
-		final List<IEmployee> resultat 
-			= new ArrayList<IEmployee>();
+		final List<IPerson> resultat 
+			= new ArrayList<IPerson>();
 
-		final Iterator<EmployeeEntityJPA> iteS 
+		final Iterator<PersonEntityJPA> iteS 
 			= listeEntities.iterator();
 
 		try {
 
 			while (iteS.hasNext()) {
 
-				final EmployeeEntityJPA entity = iteS.next();
+				final PersonEntityJPA entity = iteS.next();
 
 				/* passe un null dans le lot. */
 				if (entity == null) {
@@ -659,7 +624,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 					 * de l'objet ne sont pas remplis.*/
 					if (this.champsObligatoiresRemplis(entity)) {
 						
-						IEmployee objectPersistant = null;
+						IPerson objectPersistant = null;
 
 						try {
 
@@ -669,7 +634,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 
 							/* conversion de l'ENTITY en OBJET METIER. */
 							objectPersistant 
-								= EmployeeConvertisseurMetierEntity
+								= PersonConvertisseurMetierEntity
 								.convertirEntityJPAEnObjetMetier(entity);
 
 						} catch (Exception e) {
@@ -682,7 +647,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 							/* Gestion de la DAO Exception. */
 							this.gestionnaireException
 								.gererException(
-										CLASSE_EMPLOYEEDAO_JPA_SPRING
+										CLASSE_PERSONDAO_JPA_SPRING
 											, "Méthode saveIterable(lot)", e);
 						}
 						
@@ -711,7 +676,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 							, "Méthode saveIterable(lot)", e);
 
 		}
@@ -730,8 +695,8 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public IEmployee retrieve(
-			final IEmployee pObject) throws Exception {
+	public IPerson retrieve(
+			final IPerson pObject) throws Exception {
 
 		/* return null si pObject == null. */
 		if (pObject == null) {
@@ -748,8 +713,8 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			return null;
 		}
 
-		IEmployee objetResultat = null;		
-		EmployeeEntityJPA entity = null;
+		IPerson objetResultat = null;		
+		PersonEntityJPA entity = null;
 
 		/* récupération de la requête paramétrée. */
 		final Query requete = this.fournirRequeteEgaliteMetier(pObject);
@@ -758,11 +723,11 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			
 			/* Execution de la requete HQL. */
 			entity 
-				= (EmployeeEntityJPA) requete.getSingleResult();
+				= (PersonEntityJPA) requete.getSingleResult();
 			
 			/* conversion de l'ENTITY en OBJET METIER. */
 			objetResultat 
-				= EmployeeConvertisseurMetierEntity
+				= PersonConvertisseurMetierEntity
 					.convertirEntityJPAEnObjetMetier(entity);
 			
 		}
@@ -783,7 +748,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 						, "Méthode retrieve(objet)", e);
 		}
 		
@@ -798,7 +763,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public IEmployee findById(
+	public IPerson findById(
 			final Long pId) throws Exception {
 		
 		/* retourne null si pId == null. */
@@ -816,8 +781,8 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			return null;
 		}
 
-		IEmployee objetTrouve = null;
-		EmployeeEntityJPA entity = null;
+		IPerson objetTrouve = null;
+		PersonEntityJPA entity = null;
 
 		try {
 			
@@ -825,11 +790,11 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* récupération de l'ENTITY. */
 			entity 
 				= this.entityManager.find(
-						EmployeeEntityJPA.class, pId);
+						PersonEntityJPA.class, pId);
 			
 			/* conversion de l'ENTITY en OBJET METIER. */
 			objetTrouve 
-				= EmployeeConvertisseurMetierEntity
+				= PersonConvertisseurMetierEntity
 					.convertirEntityJPAEnObjetMetier(entity);
 			
 		}
@@ -838,7 +803,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 						, "Méthode findById(ID)", e);
 			
 		}
@@ -855,7 +820,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 */
 	@Override
 	public Long retrieveId(
-			final IEmployee pObject) throws Exception {
+			final IPerson pObject) throws Exception {
 		
 		/* return null si pObject == null. */
 		if (pObject == null) {
@@ -872,8 +837,8 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			return null;
 		}
 		
-		IEmployee objetResultat = null;		
-		EmployeeEntityJPA entity = null;
+		IPerson objetResultat = null;		
+		PersonEntityJPA entity = null;
 		
 		/* récupération de la requête paramétrée. */
 		final Query requete = this.fournirRequeteEgaliteMetier(pObject);
@@ -882,11 +847,11 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			
 			/* Execution de la requete HQL. */
 			entity 
-				= (EmployeeEntityJPA) requete.getSingleResult();
+				= (PersonEntityJPA) requete.getSingleResult();
 			
 			/* conversion de l'ENTITY en OBJET METIER. */
 			objetResultat 
-				= EmployeeConvertisseurMetierEntity
+				= PersonConvertisseurMetierEntity
 					.convertirEntityJPAEnObjetMetier(entity);
 			
 		}
@@ -907,7 +872,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 						, "Méthode retrieveId(objet)", e);
 		}
 		
@@ -926,7 +891,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<IEmployee> rechercherRapide(
+	public List<IPerson> rechercherRapide(
 			final String pString) throws Exception {
 				
 		/* Cas où this.entityManager == null. */
@@ -954,9 +919,9 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		
 		requete.setParameter("pattern", patternRecherche);
 		
-		List<EmployeeEntityJPA> resultatEntity = null;
+		List<PersonEntityJPA> resultatEntity = null;
 				
-		List<IEmployee> resultat = null;
+		List<IPerson> resultat = null;
 		
 		try {
 			
@@ -966,7 +931,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			
 			/* conversion de la liste ENTITY en liste OBJET METIER. */
 			resultat 
-				= EmployeeConvertisseurMetierEntity
+				= PersonConvertisseurMetierEntity
 					.convertirListEntitiesJPAEnModel(resultatEntity);
 			
 		}
@@ -987,7 +952,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 						, "Méthode rechercherRapide(String %recherche%)", e);
 		}
 		
@@ -1006,7 +971,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<IEmployee> findAll() throws Exception {
+	public List<IPerson> findAll() throws Exception {
 		
 		/* Cas où this.entityManager == null. */
 		if (this.entityManager == null) {
@@ -1020,11 +985,11 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		
 		/* Création de la requête HQL sous forme de String. */
 		final String requeteString 
-			= "from EmployeeEntityJPA";
+			= "from PersonEntityJPA";
 		
-		List<EmployeeEntityJPA> resultatEntity = null;
+		List<PersonEntityJPA> resultatEntity = null;
 		
-		List<IEmployee> resultat = null;
+		List<IPerson> resultat = null;
 		
 		try {
 			
@@ -1036,7 +1001,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			resultatEntity = query.getResultList();
 			
 			/* convertit la liste d'Entities en OBJETS METIER. */
-			resultat = EmployeeConvertisseurMetierEntity
+			resultat = PersonConvertisseurMetierEntity
 						.convertirListEntitiesJPAEnModel(
 								resultatEntity);
 
@@ -1051,7 +1016,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 						, "Méthode findAll()", e);
 			
 		}
@@ -1067,7 +1032,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<IEmployee> findAllMax(
+	public List<IPerson> findAllMax(
 			final int pStartPosition
 				, final int pMaxResult) throws Exception {
 
@@ -1088,11 +1053,11 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		
 		/* Création de la requête HQL sous forme de String. */
 		final String requeteString 
-			= "from EmployeeEntityJPA";
+			= "from PersonEntityJPA";
 		
-		List<EmployeeEntityJPA> resultatEntity = null;
+		List<PersonEntityJPA> resultatEntity = null;
 		
-		List<IEmployee> resultat = null;
+		List<IPerson> resultat = null;
 		
 		try {
 			
@@ -1107,7 +1072,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 						
 			/* convertit la liste d'Entities en OBJETS METIER. */
 			resultat 
-			= EmployeeConvertisseurMetierEntity
+			= PersonConvertisseurMetierEntity
 				.convertirListEntitiesJPAEnModel(resultatEntity);
 
 		}
@@ -1121,7 +1086,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 						, "Méthode findAllMax(int pStartPosition"
 								+ ", int pMaxResult)", e);
 			
@@ -1138,7 +1103,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Iterable<IEmployee> findAllIterable(
+	public Iterable<IPerson> findAllIterable(
 			final Iterable<Long> pIds) throws Exception {
 		
 		/* retourne null si pIds == null. */
@@ -1146,12 +1111,12 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			return null;
 		}
 
-		final List<IEmployee> resultat 
-			= new ArrayList<IEmployee>();
+		final List<IPerson> resultat 
+			= new ArrayList<IPerson>();
 
 		for (final Long id : pIds) {
 			
-			final IEmployee objet = this.findById(id);
+			final IPerson objet = this.findById(id);
 			
 			if (objet != null) {
 				resultat.add(objet);
@@ -1172,8 +1137,8 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public IEmployee update(
-			final IEmployee pObject) throws Exception {
+	public IPerson update(
+			final IPerson pObject) throws Exception {
 		
 		/* retourne null si pObject == null. */
 		if (pObject == null) {
@@ -1208,11 +1173,11 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		}
 				
 		/* conversion de l'OBJET METIER en ENTITY. */
-		final EmployeeEntityJPA entity = 
-				EmployeeConvertisseurMetierEntity
+		final PersonEntityJPA entity = 
+				PersonConvertisseurMetierEntity
 					.convertirObjetMetierEnEntityJPA(pObject);
 
-		IEmployee persistentObject = null;
+		IPerson persistentObject = null;
 		
 		try {
 			
@@ -1221,7 +1186,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 
 			/* conversion de l'ENTITY en OBJET METIER. */
 			persistentObject 
-				= EmployeeConvertisseurMetierEntity
+				= PersonConvertisseurMetierEntity
 					.convertirEntityJPAEnObjetMetier(entity);
 			
 		}
@@ -1235,7 +1200,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 						, "Méthode update(objet)", e);
 						
 		}
@@ -1251,8 +1216,8 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public IEmployee updateById(
-			final Long pId, final IEmployee pObjectModifie) 
+	public IPerson updateById(
+			final Long pId, final IPerson pObjectModifie) 
 												throws Exception {
 		
 		/* retourne null si pId == null. */
@@ -1283,7 +1248,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		}
 		
 		/* récupère l'objet à modifier par sons index. */
-		final IEmployee objetAModifier = this.findById(pId);
+		final IPerson objetAModifier = this.findById(pId);
 		
 		/* Cas où this.entityManager == null. */
 		if (this.entityManager == null) {
@@ -1295,7 +1260,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			return null;
 		}
 				
-		IEmployee persistentObject = null;
+		IPerson persistentObject = null;
 		
 		try {
 			
@@ -1304,8 +1269,8 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			objetAModifier.setLastName(pObjectModifie.getLastName());
 			
 			/* conversion de l'OBJET METIER en ENTITY. */
-			final EmployeeEntityJPA entity = 
-					EmployeeConvertisseurMetierEntity
+			final PersonEntityJPA entity = 
+					PersonConvertisseurMetierEntity
 						.convertirObjetMetierEnEntityJPA(objetAModifier);
 
 			/* MODIFIE en base. */
@@ -1316,7 +1281,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			
 			/* conversion de l'ENTITY en OBJET METIER. */
 			persistentObject 
-				= EmployeeConvertisseurMetierEntity
+				= PersonConvertisseurMetierEntity
 					.convertirEntityJPAEnObjetMetier(entity);
 			
 		}
@@ -1330,7 +1295,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 						, "méthode updateById(Id, Object)", e);
 						
 		}
@@ -1350,7 +1315,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 */
 	@Override
 	public boolean delete(
-			final IEmployee pObject) throws Exception {
+			final IPerson pObject) throws Exception {
 		
 		/* retourne false si pObject == null. */
 		if (pObject == null) {
@@ -1358,7 +1323,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		}
 		
 		/* récupère l'instance persistante. */
-		final IEmployee persistanceInstance 
+		final IPerson persistanceInstance 
 			= this.retrieve(pObject);
 		
 		/* retourne false si pObject n'est pas persisté. */
@@ -1381,9 +1346,9 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		try {
 
 			/* récupération de l'ENTITY a détruire. */
-			final EmployeeEntityJPA entity 
+			final PersonEntityJPA entity 
 				= this.entityManager.find(
-						EmployeeEntityJPA.class
+						PersonEntityJPA.class
 							, persistanceInstance.getId());
 						
 			/* ************ */
@@ -1402,7 +1367,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 						, "Méthode delete(objet)", e);
 									
 		}
@@ -1444,9 +1409,9 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		try {
 		
 			/* récupération de l'ENTITY a détruire. */
-			final EmployeeEntityJPA entity 
+			final PersonEntityJPA entity 
 				= this.entityManager.find(
-						EmployeeEntityJPA.class
+						PersonEntityJPA.class
 							, pId);
 						
 			/* ************ */
@@ -1463,7 +1428,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
-				.gererException(CLASSE_EMPLOYEEDAO_JPA_SPRING
+				.gererException(CLASSE_PERSONDAO_JPA_SPRING
 						, "Méthode deleteById(ID)", e);
 		}
 		
@@ -1501,9 +1466,9 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		try {
 						
 			/* récupération de l'ENTITY a détruire. */
-			final EmployeeEntityJPA entity 
+			final PersonEntityJPA entity 
 				= this.entityManager.find(
-						EmployeeEntityJPA.class
+						PersonEntityJPA.class
 							, pId);
 			
 			/* ************ */
@@ -1522,7 +1487,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
-				.gererException(CLASSE_EMPLOYEEDAO_JPA_SPRING
+				.gererException(CLASSE_PERSONDAO_JPA_SPRING
 						, "Méthode deleteByIdBoolean(ID)", e);
 		}
 		
@@ -1550,7 +1515,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 
 		/* Création de la requête HQL sous forme de String. */
 		final String requeteString 
-			= "delete from EmployeeEntityJPA";
+			= "delete from PersonEntityJPA";
 
 		try {
 			
@@ -1572,7 +1537,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 						, "Méthode deleteAll()", e);
 			
 		}
@@ -1601,7 +1566,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		
 		/* Création de la requête HQL sous forme de String. */
 		final String requeteString 
-			= "delete from EmployeeEntityJPA";
+			= "delete from PersonEntityJPA";
 		
 		try {
 			
@@ -1625,7 +1590,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
 				.gererException(
-						CLASSE_EMPLOYEEDAO_JPA_SPRING
+						CLASSE_PERSONDAO_JPA_SPRING
 						, "Méthode deleteAllBoolean()", e);
 			
 		}
@@ -1642,7 +1607,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 */
 	@Override
 	public void deleteIterable(
-			final Iterable<IEmployee> pList) throws Exception {
+			final Iterable<IPerson> pList) throws Exception {
 		
 		/* ne fait rien si pList == null. */
 		if (pList == null) {
@@ -1659,23 +1624,23 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			return;
 		}
 		
-		final Iterator<IEmployee> ite = pList.iterator();
+		final Iterator<IPerson> ite = pList.iterator();
 		
 		try {
 			
 			while (ite.hasNext()) {
 				
-				final IEmployee objet = ite.next();
-				final IEmployee objetPersistant = this.retrieve(objet);
+				final IPerson objet = ite.next();
+				final IPerson objetPersistant = this.retrieve(objet);
 				
 				if (objetPersistant == null) {
 					continue;
 				}
 								
 				/* récupération de l'ENTITY a détruire. */
-				final EmployeeEntityJPA entity 
+				final PersonEntityJPA entity 
 					= this.entityManager.find(
-							EmployeeEntityJPA.class
+							PersonEntityJPA.class
 								, objetPersistant.getId());
 				
 				/* ************ */
@@ -1694,7 +1659,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException.gererException(
-					CLASSE_EMPLOYEEDAO_JPA_SPRING
+					CLASSE_PERSONDAO_JPA_SPRING
 					, "Méthode deleteIterable(Iterable)", e);
 			
 		}
@@ -1708,7 +1673,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 */
 	@Override
 	public boolean deleteIterableBoolean(
-			final Iterable<IEmployee> pList) throws Exception {
+			final Iterable<IPerson> pList) throws Exception {
 		
 		/* retourne false si pList == null. */
 		if (pList == null) {
@@ -1727,23 +1692,23 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 
 		boolean resultat = false;
 		
-		final Iterator<IEmployee> ite = pList.iterator();
+		final Iterator<IPerson> ite = pList.iterator();
 		
 		try {
 			
 			while (ite.hasNext()) {
 				
-				final IEmployee objet = ite.next();
-				final IEmployee objetPersistant = this.retrieve(objet);
+				final IPerson objet = ite.next();
+				final IPerson objetPersistant = this.retrieve(objet);
 				
 				if (objetPersistant == null) {
 					continue;
 				}
 				
 				/* récupération de l'ENTITY a détruire. */
-				final EmployeeEntityJPA entity 
+				final PersonEntityJPA entity 
 					= this.entityManager.find(
-							EmployeeEntityJPA.class
+							PersonEntityJPA.class
 								, objetPersistant.getId());
 				
 				/* ************ */
@@ -1764,7 +1729,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException.gererException(
-					CLASSE_EMPLOYEEDAO_JPA_SPRING
+					CLASSE_PERSONDAO_JPA_SPRING
 					, "Méthode deleteIterableBoolean(Iterable)", e);
 			
 		}
@@ -1784,7 +1749,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 */
 	@Override
 	public boolean exists(
-			final IEmployee pObject) throws Exception {
+			final IPerson pObject) throws Exception {
 		
 		/* retourne false si pObject == null. */
 		if (pObject == null) {
@@ -1802,7 +1767,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		}
 
 		boolean resultat = false;		
-		IEmployee objetResultat = null;
+		IPerson objetResultat = null;
 		
 		/* récupération de la requête paramétrée. */
 		final Query requete = this.fournirRequeteEgaliteMetier(pObject);
@@ -1811,7 +1776,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			
 			/* Execution de la requete HQL. */
 			objetResultat 
-			= (IEmployee) requete.getSingleResult();
+			= (IPerson) requete.getSingleResult();
 			
 			/* retourne true si l'objet existe en base. */
 			if (objetResultat != null) {
@@ -1834,7 +1799,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 			
 			/* Gestion de la DAO Exception. */
 			this.gestionnaireException
-				.gererException(CLASSE_EMPLOYEEDAO_JPA_SPRING
+				.gererException(CLASSE_PERSONDAO_JPA_SPRING
 						, "Méthode exists(objet)", e);
 		}
 		
@@ -1875,7 +1840,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	public Long count() throws Exception {
 		
 		/* Récupère la liste d'Objets métier de Type paramétré T. */
-		final List<IEmployee> listObjects = this.findAll();
+		final List<IPerson> listObjects = this.findAll();
 		
 		if (listObjects != null) {
 			
@@ -1895,7 +1860,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	@Override
 	public void ecrireStockageDansConsole() throws Exception {
 		
-		final List<IEmployee> stockageList = this.findAll();
+		final List<IPerson> stockageList = this.findAll();
 		
 		/* ne fait rien si this.findAll() retourne null. */
 		if (stockageList == null) {
@@ -1913,7 +1878,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 	 */
 	@Override
 	public String afficherListeObjetsMetier(
-			final List<IEmployee> pList) {
+			final List<IPerson> pList) {
 		
 		/* retourne null si pList == null. */
 		if (pList == null) {
@@ -1922,7 +1887,7 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 		
 		final StringBuffer stb = new StringBuffer();
 		
-		for (final IEmployee employee : pList) {
+		for (final IPerson employee : pList) {
 			
 			stb.append(employee.toString());
 			stb.append(SAUT_LIGNE_PLATEFORME);
@@ -1945,4 +1910,4 @@ public class EmployeeDAOJPASpring implements IEmployeeDAO {
 
 
 	
-} // FIN DE L'INTERFACE EmployeeDAOJPASpring.-----------------------------------------
+}

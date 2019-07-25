@@ -1,7 +1,7 @@
 /**
  * CLASSE package-info :<br/>
  * Ce package contient tous les <b>DAO</b> relatifs 
- * au concept de Person.<br/>
+ * au concept de PersonEntityJPA.<br/>
  * <br/>
  *
  * - Exemple d'utilisation :<br/>

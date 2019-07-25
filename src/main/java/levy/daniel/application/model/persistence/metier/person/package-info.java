@@ -1,7 +1,7 @@
 /**
  * CLASSE package-info :<br/>
  * Ce package contient toutes les classes nécessaires 
- * à la <b>PERSISTENCE du concept de Person</b> 
+ * à la <b>PERSISTENCE du concept de PersonEntityJPA</b> 
  * dans un <i>stockage de données</i> 
  * (Base de données Relationnelle SGBDR
  * , fichier XML à plat JAXB, ...).<br/>

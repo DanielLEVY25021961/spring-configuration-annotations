@@ -1,6 +1,7 @@
 /**
  * CLASSE package-info :<br/>
- * .<br/>
+ * Ce package contient les Entities JAXB 
+ * en vue de la serialization des objets en XML.<br/>
  * <br/>
  *
  * - Exemple d'utilisation :<br/>

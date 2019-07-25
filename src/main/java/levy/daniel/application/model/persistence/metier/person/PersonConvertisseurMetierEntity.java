@@ -1,5 +1,7 @@
-package levy.daniel.application.model.persistence.metier.employee;
+package levy.daniel.application.model.persistence.metier.person;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -7,15 +9,13 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import levy.daniel.application.model.metier.employee.IEmployee;
-import levy.daniel.application.model.metier.employee.impl.Employee;
-import levy.daniel.application.model.persistence.metier.employee.entities.jpa.EmployeeEntityJPA;
+import levy.daniel.application.model.metier.person.IPerson;
+import levy.daniel.application.model.metier.person.impl.Person;
+import levy.daniel.application.model.persistence.metier.person.entities.jpa.PersonEntityJPA;
 
 /**
- * CLASSE EmployeeConvertisseurMetierEntity :<br/>
- * classe <b>utilitaire</b> chargée de <b>convertir 
- * une ENTITY en OBJET METIER</b> et de <b>convertir un
- * OBJET METIER en ENTITY</b>.<br/>
+ * CLASSE PersonConvertisseurMetierEntity :<br/>
+ * .<br/>
  * <br/>
  *
  * - Exemple d'utilisation :<br/>
@@ -28,22 +28,22 @@ import levy.daniel.application.model.persistence.metier.employee.entities.jpa.Em
  * <br/>
  *
  *
- * @author daniel.levy Lévy
+ * @author dan Lévy
  * @version 1.0
  * @since 25 juil. 2019
  *
  */
-public class EmployeeConvertisseurMetierEntity {
+public class PersonConvertisseurMetierEntity {
 
 	// ************************ATTRIBUTS************************************/
 
 	/**
 	 * FORMAT pour affichage formaté à la console 
 	 * des IEmployee.<br/>
-	 * "id=%1$-5d prénom = %2$-15s nom = %3$-20s".
+	 * "id=%1$-5d prénom = %2$-15s nom = %3$-20s dateNaissance = %4$-20s".
 	 */
-	public static final String FORMAT_EMPLOYEE 
-		= "id=%1$-5d prénom = %2$-15s nom = %3$-20s";
+	public static final String FORMAT_PERSON 
+		= "id=%1$-5d prénom = %2$-15s nom = %3$-20s dateNaissance = %4$-20s";
 
 	/**
 	 * "line.separator".<br/>
@@ -56,17 +56,52 @@ public class EmployeeConvertisseurMetierEntity {
 	 */
 	@SuppressWarnings("unused")
 	private static final Log LOG 
-		= LogFactory.getLog(EmployeeConvertisseurMetierEntity.class);
+		= LogFactory.getLog(PersonConvertisseurMetierEntity.class);
 
 	// *************************METHODES************************************/
 	
-		
+	
 	 /**
 	 * CONSTRUCTEUR D'ARITE NULLE.
 	 */
-	private EmployeeConvertisseurMetierEntity() {
+	private PersonConvertisseurMetierEntity() {
 		super();
 	} // Fin de CONSTRUCTEUR D'ARITE NULLE.________________________________
+
+	
+	
+	/**
+	 * retourne une String de la forme 
+	 * <code>[annee-mois-jour]</code> 
+	 * à partir d'une java.time.LocalDate pDate.<br/>
+	 * Par exemple, retourne <b>"2019-06-13"</b> 
+	 * pour le 13 juin 2019.<br/>
+	 * <br/>
+	 * - retourne null si pDate == null.<br/>
+	 * <br/>
+	 *
+	 * @param pDate : LocalDate : date à formater.
+	 * 
+	 * @return : String : affichage de la date formatée.<br/>
+	 */
+	private static String formaterLocalDateEnString(
+			final LocalDate pDate) {
+		
+		/* retourne null si pDate == null. */
+		if (pDate == null) {
+			return null;
+		}
+		
+		/* formateur de type 2019-06-13 
+		 * (13 juin 2019)*/
+		final DateTimeFormatter formatter 
+			= DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	
+		final String resultat = pDate.format(formatter);
+				
+		return resultat;
+		
+	} // Fin de formaterLocalDateEnString(...).____________________________
 
 	
 	
@@ -77,23 +112,24 @@ public class EmployeeConvertisseurMetierEntity {
 	 * à null si pEntityJPA == null.</li>
 	 * </ul>
 	 *
-	 * @param pEntityJPA : EmployeeEntityJPA.<br/>
+	 * @param pEntityJPA : PersonEntityJPA.<br/>
 	 * 
-	 * @return : IEmployee.<br/>
+	 * @return : IPerson.<br/>
 	 */
-	public static IEmployee creerObjetMetierAPartirEntityJPA(
-			final EmployeeEntityJPA pEntityJPA) {
+	public static IPerson creerObjetMetierAPartirEntityJPA(
+			final PersonEntityJPA pEntityJPA) {
 
-		synchronized (EmployeeConvertisseurMetierEntity.class) {
+		synchronized (PersonConvertisseurMetierEntity.class) {
 			
-			final IEmployee objet 
-				= new Employee();
+			final IPerson objet 
+				= new Person();
 			
 			if (pEntityJPA != null) {
 				
 				objet.setId(pEntityJPA.getId());
 				objet.setFirstName(pEntityJPA.getFirstName());
 				objet.setLastName(pEntityJPA.getLastName());
+				objet.setBirthDate(pEntityJPA.getBirthDate());
 				
 			}
 							
@@ -104,8 +140,7 @@ public class EmployeeConvertisseurMetierEntity {
 	} // Fin de creerObjetMetierAPartirEntityJPA(...)._____________________
 	
 	
-	
-	
+		
 	/**
 	 * <b>convertit une ENTITY JPA en OBJET METIER</b>.<br/>
 	 * <ul>
@@ -114,25 +149,26 @@ public class EmployeeConvertisseurMetierEntity {
 	 * <li>injecte les valeurs de l'ENTITY dans un OBJET METIER.</li>
 	 * </ul>
 	 *
-	 * @param pEntity : EmployeeEntityJPA.<br/>
+	 * @param pEntity : PersonEntityJPA.<br/>
 	 * 
-	 * @return : IEmployee : Objet métier.<br/>
+	 * @return : IPerson : Objet métier.<br/>
 	 */
-	public static IEmployee convertirEntityJPAEnObjetMetier(
-			final EmployeeEntityJPA pEntity) {
+	public static IPerson convertirEntityJPAEnObjetMetier(
+			final PersonEntityJPA pEntity) {
 		
-		synchronized (EmployeeConvertisseurMetierEntity.class) {
+		synchronized (PersonConvertisseurMetierEntity.class) {
 			
-			IEmployee objet = null;
+			IPerson objet = null;
 			
 			if (pEntity != null) {
 				
 				/* récupère les valeurs dans l'Entity. */
 				/* injecte les valeurs typées dans un OBJET METIER. */
 				objet 
-					= new Employee(
+					= new Person(
 							pEntity.getId()
-							, pEntity.getFirstName(), pEntity.getLastName());
+							, pEntity.getFirstName(), pEntity.getLastName()
+							, pEntity.getBirthDate());
 			}
 			
 			return objet;
@@ -151,30 +187,30 @@ public class EmployeeConvertisseurMetierEntity {
 	 * - n'insère dans la liste résultat que les Entities non null.<br/>
 	 * <br/>
 	 *
-	 * @param pList : List&lt;EmployeeEntityJPA&gt;.<br/>
+	 * @param pList : List&lt;PersonEntityJPA&gt;.<br/>
 	 * 
-	 * @return : List&lt;IEmployee&gt;.<br/>
+	 * @return : List&lt;IPerson&gt;.<br/>
 	 */
-	public static List<IEmployee> convertirListEntitiesJPAEnModel(
-			final List<EmployeeEntityJPA> pList) {
+	public static List<IPerson> convertirListEntitiesJPAEnModel(
+			final List<PersonEntityJPA> pList) {
 		
-		synchronized (EmployeeConvertisseurMetierEntity.class) {
+		synchronized (PersonConvertisseurMetierEntity.class) {
 			
 			/* retourne null si pList == null. */
 			if (pList == null) {
 				return null;
 			}
 			
-			final List<IEmployee> resultat 
-				= new ArrayList<IEmployee>();
+			final List<IPerson> resultat 
+				= new ArrayList<IPerson>();
 			
-			for (final EmployeeEntityJPA entity : pList) {
+			for (final PersonEntityJPA entity : pList) {
 				
 				/* n'insère dans la liste résultat 
 				 * que les Entities non null. */
 				if (entity != null) {
 					
-					final IEmployee objet 													
+					final IPerson objet 													
 						= convertirEntityJPAEnObjetMetier(entity);
 					
 					resultat.add(objet);
@@ -197,23 +233,24 @@ public class EmployeeConvertisseurMetierEntity {
 	 * à null si pObject == null.</li>
 	 * </ul>
 	 *
-	 * @param pObject : IEmployee.<br/>
+	 * @param pObject : IPerson.<br/>
 	 *  
-	 * @return : EmployeeEntityJPA.<br/>
+	 * @return : PersonEntityJPA.<br/>
 	 */
-	public static EmployeeEntityJPA creerEntityJPA(
-			final IEmployee pObject) {
+	public static PersonEntityJPA creerEntityJPA(
+			final IPerson pObject) {
 		
-		synchronized (EmployeeConvertisseurMetierEntity.class) {
+		synchronized (PersonConvertisseurMetierEntity.class) {
 			
-			final EmployeeEntityJPA entity 
-				= new EmployeeEntityJPA();
+			final PersonEntityJPA entity 
+				= new PersonEntityJPA();
 			
 			if (pObject != null) {
 				
 				entity.setId(pObject.getId());
 				entity.setFirstName(pObject.getFirstName());
 				entity.setLastName(pObject.getLastName());
+				entity.setBirthDate(pObject.getBirthDate());
 				
 			}
 			
@@ -233,24 +270,25 @@ public class EmployeeConvertisseurMetierEntity {
 	 * <li>injecte les valeurs de l'objet métier dans une ENTITY.</li>
 	 * </ul>
 	 *
-	 * @param pObject : IEmployee : Objet métier.<br/>
+	 * @param pObject : IPerson : Objet métier.<br/>
 	 * 
-	 * @return : EmployeeEntityJPA : ENTITY JPA.<br/>
+	 * @return : PersonEntityJPA : ENTITY JPA.<br/>
 	 */
-	public static EmployeeEntityJPA convertirObjetMetierEnEntityJPA(
-			final IEmployee pObject) {
+	public static PersonEntityJPA convertirObjetMetierEnEntityJPA(
+			final IPerson pObject) {
 		
-		synchronized (EmployeeConvertisseurMetierEntity.class) {
+		synchronized (PersonConvertisseurMetierEntity.class) {
 			
-			EmployeeEntityJPA resultat = null;
+			PersonEntityJPA resultat = null;
 			
 			if (pObject != null) {
 								
 				/* injecte les valeurs String dans un DTO. */
 				resultat 
-					= new EmployeeEntityJPA(
+					= new PersonEntityJPA(
 							pObject.getId()
-							, pObject.getFirstName(), pObject.getLastName());
+							, pObject.getFirstName(), pObject.getLastName()
+							, pObject.getBirthDate());
 				
 			}
 						
@@ -269,28 +307,28 @@ public class EmployeeConvertisseurMetierEntity {
 	 * - retourne null si pList == null.<br/>
 	 * <br/>
 	 *
-	 * @param pList : List&lt;IEmployee&gt;
+	 * @param pList : List&lt;IPerson&gt;
 	 * 
-	 * @return : List&lt;EmployeeEntityJPA&gt;.<br/>
+	 * @return : List&lt;PersonEntityJPA&gt;.<br/>
 	 */
-	public static List<EmployeeEntityJPA> convertirListModelEnEntitiesJPA(
-			final Iterable<IEmployee> pList) {
+	public static List<PersonEntityJPA> convertirListModelEnEntitiesJPA(
+			final Iterable<IPerson> pList) {
 		
-		synchronized (EmployeeConvertisseurMetierEntity.class) {
+		synchronized (PersonConvertisseurMetierEntity.class) {
 			
 			/* retourne null si pList == null. */
 			if (pList == null) {
 				return null;
 			}
 			
-			final List<EmployeeEntityJPA> resultat 
-				= new ArrayList<EmployeeEntityJPA>();
+			final List<PersonEntityJPA> resultat 
+				= new ArrayList<PersonEntityJPA>();
 			
-			for (final IEmployee objet : pList) {
+			for (final IPerson objet : pList) {
 				
 				if (objet != null) {
 					
-					final EmployeeEntityJPA entity 
+					final PersonEntityJPA entity 
 						= convertirObjetMetierEnEntityJPA(objet);
 					
 					resultat.add(entity);
@@ -321,13 +359,13 @@ public class EmployeeConvertisseurMetierEntity {
 	 * passée en paramètre.<br/>
 	 * <br/>
 	 *
-	 * @param pList : List&lt;EmployeeEntityJPA&gt; : 
+	 * @param pList : List&lt;PersonEntityJPA&gt; : 
 	 * liste d'Entities.<br/>
 	 * 
 	 * @return : String : affichage.<br/>
 	 */
 	public static String afficherFormateListEntities(
-			final List<EmployeeEntityJPA> pList) {
+			final List<PersonEntityJPA> pList) {
 		
 		/* retourne null si pList == null. */
 		if (pList == null) {
@@ -336,7 +374,7 @@ public class EmployeeConvertisseurMetierEntity {
 		
 		final StringBuilder stb = new StringBuilder();
 		
-		for (final IEmployee entity : pList) {
+		for (final IPerson entity : pList) {
 			
 			/* n'affiche pas une Entity null 
 			 * dans la liste passée en paramètre. */
@@ -345,9 +383,10 @@ public class EmployeeConvertisseurMetierEntity {
 				final String stringformatee 
 					= String.format(
 							Locale.getDefault()
-								, FORMAT_EMPLOYEE
+								, FORMAT_PERSON
 								, entity.getId()
-								, entity.getFirstName(), entity.getLastName());
+								, entity.getFirstName(), entity.getLastName()
+								, formaterLocalDateEnString(entity.getBirthDate()));
 				
 				stb.append(stringformatee);
 				
@@ -377,13 +416,13 @@ public class EmployeeConvertisseurMetierEntity {
 	 * passée en paramètre.<br/>
 	 * <br/>
 	 *
-	 * @param pList : List&lt;IEmployee&gt; : 
+	 * @param pList : List&lt;IPerson&gt; : 
 	 * liste d'Entities.<br/>
 	 * 
 	 * @return : String : affichage.<br/>
 	 */
 	public static String afficherFormateListObjets(
-			final List<IEmployee> pList) {
+			final List<IPerson> pList) {
 		
 		/* retourne null si pList == null. */
 		if (pList == null) {
@@ -392,7 +431,7 @@ public class EmployeeConvertisseurMetierEntity {
 		
 		final StringBuilder stb = new StringBuilder();
 		
-		for (final IEmployee entity : pList) {
+		for (final IPerson entity : pList) {
 			
 			/* n'affiche pas une Entity null 
 			 * dans la liste passée en paramètre. */
@@ -401,9 +440,10 @@ public class EmployeeConvertisseurMetierEntity {
 				final String stringformatee 
 					= String.format(
 							Locale.getDefault()
-								, FORMAT_EMPLOYEE
+								, FORMAT_PERSON
 								, entity.getId()
-								, entity.getFirstName(), entity.getLastName());
+								, entity.getFirstName(), entity.getLastName()
+								, formaterLocalDateEnString(entity.getBirthDate()));
 				
 				stb.append(stringformatee);
 				
@@ -418,4 +458,4 @@ public class EmployeeConvertisseurMetierEntity {
 	
 	
 	
-} // FIN DE LA CLASSE EmployeeConvertisseurMetierEntity.---------------------
+} // FIN DE LA CLASSE PersonConvertisseurMetierEntity.-----------------------
