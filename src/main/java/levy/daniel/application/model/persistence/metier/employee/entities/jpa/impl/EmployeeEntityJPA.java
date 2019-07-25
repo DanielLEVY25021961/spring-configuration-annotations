@@ -1,4 +1,13 @@
-package levy.daniel.application.model.metier.employee.impl;
+package levy.daniel.application.model.persistence.metier.employee.entities.jpa.impl;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -8,7 +17,7 @@ import levy.daniel.application.model.metier.employee.IEmployee;
 
 
 /**
- * CLASSE Employee :<br/>
+ * CLASSE EmployeeEntityJPA :<br/>
  * .<br/>
  * <br/>
  *
@@ -27,7 +36,12 @@ import levy.daniel.application.model.metier.employee.IEmployee;
  * @since 14 nov. 2018
  *
  */
-public class Employee implements IEmployee {
+@Entity(name="EmployeeEntityJPA")
+@Table(name="EMPLOYEES", schema="PUBLIC"
+, uniqueConstraints=@UniqueConstraint(name="UNICITE_PRENOM_NOM"
+, columnNames={"PRENOM", "NOM"})
+, indexes={@Index(name="INDEX_NOM_PRENOM", columnList="NOM, PRENOM")})
+public class EmployeeEntityJPA implements IEmployee {
 
 	// ************************ATTRIBUTS************************************/
 
@@ -61,12 +75,12 @@ public class Employee implements IEmployee {
 	private Long id;
 		 
     /**
-     * prenom de l'Employee.<br/>
+     * prenom de l'EmployeeEntityJPA.<br/>
      */
     private String firstName;
    
     /**
-     * nom de l'Employee.<br/>
+     * nom de l'EmployeeEntityJPA.<br/>
      */
     private String lastName;
    
@@ -74,7 +88,7 @@ public class Employee implements IEmployee {
 	 * LOG : Log : 
 	 * Logger pour Log4j (utilisant commons-logging).
 	 */
-	private static final Log LOG = LogFactory.getLog(Employee.class);
+	private static final Log LOG = LogFactory.getLog(EmployeeEntityJPA.class);
 
 	// *************************METHODES************************************/
 	
@@ -82,7 +96,7 @@ public class Employee implements IEmployee {
 	 /**
 	 * CONSTRUCTEUR D'ARITE NULLE.<br/>
 	 */
-	public Employee() {
+	public EmployeeEntityJPA() {
 		this(null, null, null);
 	} // Fin de CONSTRUCTEUR D'ARITE NULLE.________________________________
 	
@@ -94,7 +108,7 @@ public class Employee implements IEmployee {
 	 * @param pFirstName
 	 * @param pLastName
 	 */
-	public Employee(
+	public EmployeeEntityJPA(
 			final String pFirstName
 					, final String pLastName) {
 		this(null, pFirstName, pLastName);
@@ -109,7 +123,7 @@ public class Employee implements IEmployee {
 	 * @param pFirstName
 	 * @param pLastName
 	 */
-	public Employee(
+	public EmployeeEntityJPA(
 			final Long pId
 				, final String pFirstName
 					, final String pLastName) {
@@ -130,7 +144,7 @@ public class Employee implements IEmployee {
 	 *
 	 * @param pDTO : IEmployeeDTO.<br/>
 	 */
-	public Employee(
+	public EmployeeEntityJPA(
 			final IEmployeeDTO pDTO) {
 		
 		super();
@@ -165,7 +179,7 @@ public class Employee implements IEmployee {
 		
 		final StringBuilder builder = new StringBuilder();
 		
-		builder.append("Employee [");
+		builder.append("EmployeeEntityJPA [");
 		
 		builder.append("id=");
 		if (this.id != null) {			
@@ -203,8 +217,11 @@ public class Employee implements IEmployee {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="ID")
 	@Override
-	public final Long getId() {
+	public Long getId() {
 		return this.id;
 	} // Fin de getId().___________________________________________________
 
@@ -214,7 +231,7 @@ public class Employee implements IEmployee {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setId(
+	public void setId(
 			final Long pId) {
 		this.id = pId;		
 	} // Fin de setId(...).________________________________________________
@@ -224,8 +241,11 @@ public class Employee implements IEmployee {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Column(name="PRENOM"
+			, unique = false, updatable = true
+			, insertable = true, nullable = false)
 	@Override
-	public final String getFirstName() {
+	public String getFirstName() {
 		return this.firstName;
 	} // Fin de getFirstName().____________________________________________
 	
@@ -235,7 +255,7 @@ public class Employee implements IEmployee {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setFirstName(
+	public void setFirstName(
 			final String pFirstName) {
 		this.firstName = pFirstName;
 	} // Fin de setFirstName(...)._________________________________________
@@ -245,8 +265,11 @@ public class Employee implements IEmployee {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Column(name="NOM"
+			, unique = false, updatable = true
+			, insertable = true, nullable = false)
 	@Override
-	public final String getLastName() {
+	public String getLastName() {
 		return this.lastName;
 	} // Fin de getLastName()._____________________________________________
 	
@@ -256,11 +279,11 @@ public class Employee implements IEmployee {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setLastName(
+	public void setLastName(
 			final String pLastName) {
 		this.lastName = pLastName;
 	} // Fin de setLastName(...).__________________________________________
 
 	
 	
-} // FIN DE LA CLASSE Employee.----------------------------------------------
+} // FIN DE LA CLASSE EmployeeEntityJPA.----------------------------------------------

@@ -1,7 +1,6 @@
 /**
  * CLASSE package-info :<br/>
- * Ce package contient tous les <b>DAO</b> relatifs 
- * au concept de Employee.<br/>
+ * .<br/>
  * <br/>
  *
  * - Exemple d'utilisation :<br/>
@@ -16,6 +15,7 @@
  *
  * @author daniel.levy Lévy
  * @version 1.0
- * @since 21 févr. 2019
+ * @since 25 juil. 2019
+ *
  */
-package levy.daniel.application.model.persistence.metier.employee.dao;
+package levy.daniel.application.model.persistence.metier.person.dao.jaxb;

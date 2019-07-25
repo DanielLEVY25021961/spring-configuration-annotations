@@ -1,7 +1,7 @@
 /**
  * CLASSE package-info :<br/>
  * Ce package contient toutes les classes nécessaires 
- * à la <b>PERSISTENCE du concept de Employee</b> 
+ * à la <b>PERSISTENCE du concept de Person</b> 
  * dans un <i>stockage de données</i> 
  * (Base de données Relationnelle SGBDR
  * , fichier XML à plat JAXB, ...).<br/>
@@ -31,5 +31,6 @@
  * @author daniel.levy Lévy
  * @version 1.0
  * @since 25 juil. 2019
+ *
  */
-package levy.daniel.application.model.persistence.metier.employee;
+package levy.daniel.application.model.persistence.metier.person;

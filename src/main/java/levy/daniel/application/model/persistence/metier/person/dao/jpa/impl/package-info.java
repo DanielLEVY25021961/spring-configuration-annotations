@@ -1,7 +1,7 @@
 /**
  * CLASSE package-info :<br/>
- * ce package contient tous les <b>DAO</b> nécessaires pour sérializer 
- * les objets dans une SGBDR avec JPA <i>avec</i> SPRING.<br/>
+ * ce package contient tous les DAO CONCRETS nécessaires pour sérializer 
+ * les objets dans une SGBDR avec JPA <i>sans</i> SPRING.<br/>
  * <br/>
  *
  * - Exemple d'utilisation :<br/>
@@ -19,4 +19,4 @@
  * @since 22 févr. 2019
  *
  */
-package levy.daniel.application.model.persistence.metier.employee.dao.jpa;
+package levy.daniel.application.model.persistence.metier.person.dao.jpa.impl;
