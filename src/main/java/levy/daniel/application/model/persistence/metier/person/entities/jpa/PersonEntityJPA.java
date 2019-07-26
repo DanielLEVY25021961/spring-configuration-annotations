@@ -317,7 +317,7 @@ public class PersonEntityJPA implements IPerson {
 	 */
 	@Column(name="DATENAISSANCE"
 			, unique = false, updatable = true
-			, insertable = true, nullable = false)
+			, insertable = true, nullable = true)
 	@Override
 	public LocalDate getBirthDate() {
 		return this.birthDate;

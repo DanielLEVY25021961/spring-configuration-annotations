@@ -68,7 +68,7 @@ public class PersonDAOJPASpring implements IPersonDAO {
 	 * "this.entityManager est NULL dans le présent DAO".<br/>
 	 */
 	public static final String MESSAGE_ENTITYMANAGER_NULL 
-	= "this.entityManager est NULL dans le présent DAO";
+		= "this.entityManager est NULL dans le présent DAO";
 
 	
 	/**
@@ -159,9 +159,9 @@ public class PersonDAOJPASpring implements IPersonDAO {
 			return false;
 		}
 		
-		if (StringUtils.isBlank(pObject.getFirstName())) {
-			return false;
-		}
+//		if (StringUtils.isBlank(pObject.getFirstName())) {
+//			return false;
+//		}
 		
 		if (StringUtils.isBlank(pObject.getLastName())) {
 			return false;
@@ -1267,6 +1267,7 @@ public class PersonDAOJPASpring implements IPersonDAO {
 			/* applique les modifications. */
 			objetAModifier.setFirstName(pObjectModifie.getFirstName());
 			objetAModifier.setLastName(pObjectModifie.getLastName());
+			objetAModifier.setBirthDate(pObjectModifie.getBirthDate());
 			
 			/* conversion de l'OBJET METIER en ENTITY. */
 			final PersonEntityJPA entity = 
@@ -1910,4 +1911,4 @@ public class PersonDAOJPASpring implements IPersonDAO {
 
 
 	
-}
+} // FIN DE LA CLASSE PersonDAOJPASpring.------------------------------------
