@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
 import levy.daniel.application.model.dto.metier.societe.ISocieteDTO;
 import levy.daniel.application.model.metier.developpeur.IDeveloppeur;
@@ -32,7 +31,6 @@ import levy.daniel.application.model.metier.societe.ISociete;
  * @since 12 nov. 2018
  *
  */
-@Component("societe")
 public class Societe implements ISociete {
 
 	// ************************ATTRIBUTS************************************/

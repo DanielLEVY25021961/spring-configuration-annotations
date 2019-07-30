@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import levy.daniel.application.model.metier.person.IPerson;
 import levy.daniel.application.model.persistence.daoexceptions.GestionnaireDaoException;
@@ -197,8 +198,8 @@ public class PersonDAOJPASpring implements IPersonDAO {
 		/* REQUETE HQL PARMETREE. */
 		requeteString 
 			= SELECT_OBJET
-				+ "where employee.firstName = :pFirstName "
-				+ "and employee.lastName = :pNom";
+				+ "where person.firstName = :pFirstName "
+				+ "and person.lastName = :pNom";
 		
 		/* Construction de la requête HQL. */
 		requete 
@@ -220,6 +221,7 @@ public class PersonDAOJPASpring implements IPersonDAO {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Transactional
 	@Override
 	public IPerson create(
 			final IPerson pObject) throws Exception {

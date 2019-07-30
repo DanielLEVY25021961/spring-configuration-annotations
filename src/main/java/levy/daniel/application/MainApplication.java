@@ -1,15 +1,17 @@
 package levy.daniel.application;
 
+import java.time.LocalDate;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import levy.daniel.application.model.metier.developpeur.IDeveloppeur;
-import levy.daniel.application.model.metier.developpeur.impl.Developpeur;
-import levy.daniel.application.model.metier.societe.impl.Societe;
+import levy.daniel.application.model.metier.person.impl.Person;
+import levy.daniel.application.model.persistence.metier.person.IPersonDAO;
 
 
 /**
@@ -37,9 +39,14 @@ public class MainApplication {
 	// ************************ATTRIBUTS************************************/
 
 	/**
-	 * .<br/>
+	 *AnnotationConfigApplicationContext.<br/>
 	 */
-	private static transient ApplicationContext context;
+	private static transient AnnotationConfigApplicationContext context;
+
+	/**
+	 * IPersonDAO.
+	 */
+	private static transient IPersonDAO personDAO;
 	
 	/**
 	 * LOG : Log : 
@@ -48,95 +55,106 @@ public class MainApplication {
 	private static final Log LOG = LogFactory.getLog(MainApplication.class);
 
 	// *************************METHODES************************************/
+
 	
-	/**
-	 * .<br/>
-	 *
-	 * @param pArgs :  :  .<br/>
+	 /**
+	 * CONSTRUCTEUR D'ARITE NULLE.
 	 */
-	public static void mainByName(
-			final String[] pArgs) {
-		
-		instancierContext();
-		
-		System.out.println();
-		final Societe societe = (Societe) recupererBeanByName("societe");
-		
-		System.out.println();
-		afficherSociete(societe);
-		System.out.println();
-		
-		final Developpeur chefDeveloppeur = (Developpeur) recupererBeanByName("chefDeveloppeur");
-		
-		if (chefDeveloppeur != null) {
-			System.out.println();
-			System.out.println("CHEF DEVELOPPEUR [(Developpeur) recupererBeanByName(\"chefDeveloppeur\")] : " + chefDeveloppeur.toString());
-		} else {
-			System.out.println("CHEF DEVELOPPEUR [(Developpeur) recupererBeanByName(\"chefDeveloppeur\")] : null");
-		}
-		
-		
-		final Developpeur developpeur = (Developpeur) recupererBeanByName("Developpeur");
-		
-		if (developpeur != null) {
-			System.out.println();
-			System.out.println("DEVELOPPEUR [(Developpeur) recupererBeanByName(\"Developpeur\"))] : " + developpeur.toString());
-		} else {
-			System.out.println("DEVELOPPEUR [(Developpeur) recupererBeanByName(\"Developpeur\")] : null");
-		}
-		
-	} // Fin de mainByName(...).___________________________________________
+	public MainApplication() {
+		super();
+	} // Fin de CONSTRUCTEUR D'ARITE NULLE.________________________________
 	
 	
  
 	/**
-	 * .<br/>
+	 * Point d'entrée de l'application.
 	 *
-	 * @param pArgs :  :  .<br/>
+	 * @param pArgs : String[] :  .<br/>
+	 * 
+	 * @throws Exception 
 	 */
 	public static void main(
-			final String[] pArgs) {
+			final String... pArgs) throws Exception {
 		
 		instancierContext();
 		
-		System.out.println();
-		final Societe societe = (Societe) recupererBeanByClass(Societe.class);
+		afficherBeansDuContexte();
 		
-		System.out.println();
-		afficherSociete(societe);
-		System.out.println();
+		afficherProfilsActifsDuContexte();
 		
-		final Developpeur chefDeveloppeur = (Developpeur) recupererBeanByClass(Developpeur.class);
-		
-		if (chefDeveloppeur != null) {
-			System.out.println();
-			System.out.println("CHEF DEVELOPPEUR [(Developpeur) recupererBeanByClass(Developpeur.class)] : " + chefDeveloppeur.toString());
-		} else {
-			System.out.println("CHEF DEVELOPPEUR [(Developpeur) recupererBeanByClass(Developpeur.class)] : null");
-		}
-		
-		
-		final Developpeur developpeur = (Developpeur) recupererBeanByClass(Developpeur.class);
-		
-		if (developpeur != null) {
-			System.out.println();
-			System.out.println("DEVELOPPEUR [(Developpeur) recupererBeanByClass(Developpeur.class)] : " + developpeur.toString());
-		} else {
-			System.out.println("DEVELOPPEUR [(Developpeur) recupererBeanByClass(Developpeur.class)] : null");
-		}
+		jouerJeuEssai();
 		
 	} // Fin de main(...)._________________________________________________
 
 
 	
 	/**
-	 * Instancie un CONTEXT SPRING 
-	 * décrit dans une CLASSE JAVA
+	 * Instancie un CONTEXT SPRING.
+	 * <ol>
+	 * <li>instancie un AnnotationConfigApplicationContext SPRING.
+	 * <br/><code><b>context = 
+	 * new AnnotationConfigApplicationContext();</b></code></li>
+	 * <li>déclare éventuellement le profil actif. (PROD, DEV, TEST, ...).
+	 * <br/><code><b>context.getEnvironment()
+	 * .setActiveProfiles("PROFIL_PROD_POSTGRES_SERVER");</b></code>
+	 * <br/>ATTENTION : Il est INDISPENSABLE de déclarer un Profile ACTIF 
+	 * si il existe plusieurs classes de Config avec différents profils 
+	 * dans le code.</li>
+	 * <li>enregistre éventuellement les classes de <i>Config SPRING</i>.
+	 * <br/>ATTENTION : si les classes de Config SPRING 
+	 * ne sont pas register ici, leurs annotations 
+	 * ComponentScan(basePackages = "packageAScanner") 
+	 * seront inopérantes.
+	 * <ul>
+	 * <li>Soit on fait ici 
+	 * <code><b>context.register(classeConfig.class);</b></code> 
+	 * sur des classes de Config Spring <i>annotées avec 
+	 * "ComponentScan(basePackages = "packageAScanner")"</i> 
+	 * et on n'a pas à insérer 
+	 * <code><b>context.scan("packageAScanner");</b></code> 
+	 * dans cette présente méthode d'instanciation du CONTEXTE SPRING.</li>
+	 * <li>Soit on ne déclare ici aucune des classes de Config SPRING 
+	 * en laissant SPRING trouver seul les classe de Config à l'aide du SCAN 
+	 * mais <i>il faut déclarer dans la présente méthode les Packages 
+	 * contenant les BEANS SPRING à scanner.</i> 
+	 * <br/> en insérant dans la présente méthode : 
+	 * <code><b>context.scan("packageAScanner")</b></code></li>
+	 * </ul>
+	 * <li>précise éventuellement dans quel Package SPRING 
+	 * doit chercher les COMPONENTS.</li>
+	 * </ol>
 	 */
 	private static void instancierContext() {
 		
-		context = new AnnotationConfigApplicationContext(
-				SpringConfigurationClass.class);
+		// INSTANCIATION DU CONTEXTE SPRING. 
+		/* instancie un AnnotationConfigApplicationContext. */
+		context = new AnnotationConfigApplicationContext();
+		
+		/* déclare éventuellement le profil actif. */
+		// ATTENTION : doit être AVANT la déclaration de la classe 
+		// de configuration (context.register(.Class)).
+		context.getEnvironment().setActiveProfiles("PROFIL_PROD_POSTGRES_SERVER");
+//		context.getEnvironment().setActiveProfiles("PROFIL_TEST_H2_MEMORY");
+		
+		/* enregistre éventuellement les classes de Config SPRING. */
+//		context.register(ConfigurateurSpringJPAPostgresServerEnDur.class);
+//		context.register(ConfigurateurSpringJPAH2MemoryEnDur.class);
+		
+		/* précise dans quel Package SPRING doit chercher les COMPONENTS. */
+		context.scan("levy.daniel.application");
+		
+		context.refresh();	
+		
+		personDAO = (IPersonDAO) context.getBean("PersonDAOJPASpring");
+		
+	} // Fin de instancierContext()._______________________________________
+	
+
+	
+	/**
+	 * affiche les BEANS SPRING contenus dans le contexte.
+	 */
+	private static void afficherBeansDuContexte() {
 		
 		String[] beansTableau = null;
 		
@@ -148,27 +166,64 @@ public class MainApplication {
 		}
 		
 		if (beansTableau != null) {
-			System.out.println("CONTENU DU CONTEXTE (context.getBeanDefinitionNames()) : ");
+			
+			System.out.println();
+			System.out.println("****** BEANS CONTENUS DANS LE CONTEXTE SPRING (context.getBeanDefinitionNames()) : ******");
+			
 			for (int i = 0; i < beansTableau.length; i++) {
 				System.out.println(beansTableau[i].toString());
 			}
 		}
 		
-	} // Fin de instancierContext()._______________________________________
+	} // Fin de afficherBeansDuContexte().___________________________________
 	
 
 	
 	/**
+	 * affiche les PROFILS ACTIFS contenus dans le contexte.
+	 */
+	private static void afficherProfilsActifsDuContexte() {
+		
+		String[] activeProfilesTableau = null;
+		
+		if (context != null) {
+			
+			activeProfilesTableau 
+				= context.getEnvironment().getActiveProfiles();
+		}
+		
+		if (activeProfilesTableau != null) {
+			
+			System.out.println();
+			System.out.println("****** PROFILS ACTIFS DANS LE CONTEXTE SPRING (context.getEnvironment().getActiveProfiles()) : ******");
+			
+			for (int i = 0; i < activeProfilesTableau.length; i++) {
+				System.out.println(activeProfilesTableau[i].toString());
+			}
+			
+		}
+		
+	} // Fin de afficherProfilsActifsDuContexte()._________________________
+	
+	
+	
+	/**
 	 * récupère un Bean dans le context SPRING 
-	 * via son <b>name</b>.<br/>
+	 * via son <b>name</b> dans le contexte.<br/>
 	 * <ul>
 	 * <li>il s'agit bien de la valeur dans l'attribut 
-	 * <b>name</b> (et pas id) du Bean dans le fichier de configuration XML.</li>
+	 * <b>name</b> (et pas id) du Bean dans le contexte.</li>
 	 * <li>retourne le Bean sous la forme Object (le caster ensuite).</li>
+	 * <li>utilise <code><b>context.getBean(String pName)</b></code></li>
+	 * <li>Par exemple, 
+	 * <code><b>recupererBeanByName("PersonDAOJPASpring")</b></code> 
+	 * retourne le BEAN SPRING "PersonDAOJPASpring" 
+	 * si il est présent dans le contexte.</li>
 	 * </ul>
 	 * - retourne null si le context == null.<br/>
 	 * - retourne null si pName est blank.<br/>
-	 * - retourne null si il n'existe pas de Bean de name pName dans le XML.<br/>
+	 * - retourne null si il n'existe pas de Bean 
+	 * de name pName dans le contexte.<br/>
 	 * <br/>
 	 *
 	 * @param pName : String : nom du bean dans le context SPRING.
@@ -200,7 +255,10 @@ public class MainApplication {
 		Object bean = null;
 		
 		try {
+			
+			// RETRIEVE
 			bean = context.getBean(pName);
+			
 		} catch (BeansException e) {
 			
 			final String message 
@@ -223,19 +281,27 @@ public class MainApplication {
 	 * récupère un Bean dans le context SPRING 
 	 * via son <b>.class</b>.<br/>
 	 * <ul>
+	 * <li>ATTENTION : jette une Exception si il existe plusieurs 
+	 * BEANS de même classe dans le contexte.</li>
 	 * <li>retourne le Bean sous la forme Object (le caster ensuite).</li>
+	 * <li>utilise <code><b>context.getBean(Class<?> pClass)</b></code></li>
+	 * <li>Par exemple, 
+	 * <code>recupererBeanByName(PersonDAOJPASpring.class)</code> 
+	 * retourne le BEAN SPRING de classe PersonDAOJPASpring 
+	 * si il est présent dans le contexte et si il est unique.</li>
 	 * </ul>
 	 * - retourne null si le context == null.<br/>
-	 * - retourne null si il n'existe pas de Bean de name pName dans le XML.<br/>
+	 * - retourne null si il n'existe pas de Bean de Class<?> pClass 
+	 * dans le contexte.<br/>
 	 * <br/>
 	 *
-	 * @param pName : Class : nom de la Class du bean dans le context SPRING.
+	 * @param pClass : Class : .Class du bean dans le context SPRING.
 	 * 
-	 * @return : Object : le Bean de class pName 
+	 * @return : Object : le Bean de class pClass 
 	 * dans le context (Object).<br/>
 	 */
 	private static Object recupererBeanByClass(
-			final Class<?> pName) {
+			final Class<?> pClass) {
 		
 		/* retourne null si le context == null. */
 		if (context == null) {
@@ -253,12 +319,15 @@ public class MainApplication {
 		Object bean = null;
 		
 		try {
-			bean = context.getBean(pName);
+			
+			// RETRIEVE *********************
+			bean = context.getBean(pClass);
+			
 		} catch (BeansException e) {
 			
 			final String message 
 				= "le Bean de class " 
-						+ pName 
+						+ pClass 
 						+ " est introuvable dans le context";
 			
 			if (LOG.isDebugEnabled()) {
@@ -269,49 +338,64 @@ public class MainApplication {
 		return bean;
 		
 	} // Fin de recupererBeanByName(...).__________________________________
-	
 
+	
 	
 	/**
 	 * .<br/>
-	 *
-	 * @param pSociete :  :  .<br/>
+	 * <br/>
+	 * : void :  .<br/>
+	 * @throws Exception 
 	 */
-	private static void afficherSociete(
-			final Societe pSociete) {
+	private static void jouerJeuEssai() throws Exception {
 		
-		if (pSociete != null) {
-			
-			final String message1 = "BEAN RECUPERE DANS LE CONTEXTE : ";
-					
-			System.out.println(message1 + pSociete.toString());
-			
-			final IDeveloppeur chefDeveloppeur 
-				= pSociete.getChefDeveloppeur();
-			
-			if (chefDeveloppeur != null) {
-				
-				final String message2 
-					= "le chef développeur dans le Bean récupéré dans le context est : ";
-				
-				System.out.println(message2 + chefDeveloppeur.toString());
-			}
-			
-			final IDeveloppeur developpeur 
-				= pSociete.getDeveloppeur();
-			
-			if (developpeur != null) {
-				
-				final String message3 
-					= "le développeur dans le Bean récupéré dans le context est : ";
-				
-				System.out.println(message3 + developpeur.toString());
-			}
-			
-		}
+		final Person person1 
+			= new Person("firstName1", "LastName1", LocalDate.of(2019, 2, 22));
 		
-	} // Fin de afficherSociete(...).______________________________________
+		final Person person2 
+			= new Person(null, "LastName2", LocalDate.of(2019, 5, 29));
+		
+		final Person person3 
+			= new Person(null, "LastName3", null);
+		
+//		final IPersonDAO personDAO = new PersonDAOJPASpring();
+		
+		personDAO.create(person1);
+		personDAO.create(person2);
+		personDAO.create(person3);
+		
+	} // Fin de jouerJeuEssai().___________________________________________
+
+
 	
+	/**
+	 * Getter .
+	 *
+	 * @return this.personDAO : IPersonDAO.<br/>
+	 */
+	public static IPersonDAO getPersonDAO() {
+		return personDAO;
+	}
+
+
 	
+	/**
+	* .
+	*
+	* @param pPersonDAO : IPersonDAO : 
+	* valeur à passer à this.personDAO.<br/>
+	*/
+	@Autowired(required = true)
+	@Qualifier("PersonDAOJPASpring")
+	public static void setPersonDAO(
+			final IPersonDAO pPersonDAO) {
+		
+		personDAO = pPersonDAO;
+		
+		System.out.println("DANS LE SETTER setPersonDAO(...)");
+	}
+
+	
+
 	
 } // FIN DE LA CLASSE MainApplication.---------------------------------------
