@@ -103,10 +103,14 @@ public class MainApplication {
 	 * dans le code.<br/>
 	 * ATTENTION : toujours déclarer les profils actifs AVANT 
 	 * de register les éventuelles classes de Config SPRING.</li>
-	 * <li>enregistre éventuellement les classes de <i>Config SPRING</i>.
+	 * <li>enregistre éventuellement les classes de <i>Config SPRING</i> 
+	 * si on veut utiliser une <b>configuration par classe Java</b>.<br/> 
+	 * La classe de Config Java doit alors être annotée avec 
+	 * <code>ComponentScans({ComponentScan("packageAScanner")})</code> 
+	 * pour scanner les BEANS SPRING.
 	 * <br/>ATTENTION : si les classes de Config SPRING 
 	 * ne sont pas register ici, leurs annotations 
-	 * ComponentScan(basePackages = "packageAScanner") 
+	 * <code>ComponentScan(basePackages = "packageAScanner")</code> 
 	 * seront inopérantes.
 	 * <ul>
 	 * <li>Soit on fait ici 
@@ -126,7 +130,9 @@ public class MainApplication {
 	 * <li>précise éventuellement dans quel Package SPRING 
 	 * doit chercher les COMPONENTS 
 	 * si on utilise pas de classe de Config SPRING.
+	 * <br/>on utilise alors la <b>configuration de SPRING par annotations.</b>
 	 * <br/><code><b>context.scan(packageAScanner);</b></code></li>
+	 * <li>rafraîchit le CONTEXT SPRING.</li>
 	 * </ol>
 	 */
 	private static void instancierContext() {
@@ -140,15 +146,22 @@ public class MainApplication {
 		// de configuration (context.register(.Class)).
 		context.getEnvironment().setActiveProfiles("PROFIL_PROD_POSTGRES_SERVER");
 //		context.getEnvironment().setActiveProfiles("PROFIL_TEST_H2_MEMORY");
+//		context.getEnvironment().setActiveProfiles("PROFIL_TEST_H2_FILE");
 		
-		/* enregistre éventuellement les classes de Config SPRING. */
+		/* enregistre éventuellement les classes de Config SPRING 
+		 * si on veut utiliser une configuration par classe Java. 
+		 * La classe de Config Java doit alors être annotée avec 
+		 * @ComponentScans({@ComponentScan("packageAScanner")}) 
+		 * pour scanner les BEANS SPRING. */
 //		context.register(ConfigurateurSpringJPAPostgresServerEnDur.class);
 //		context.register(ConfigurateurSpringJPAH2MemoryEnDur.class);
 		
 		/* précise dans quel Package SPRING doit chercher les COMPONENTS 
-		 * si on utilise pas de classe de Config SPRING. */
+		 * si on utilise pas de classe de Config SPRING. 
+		 * on utilise alors la configuration de SPRING par annotations.*/
 		context.scan("levy.daniel.application");
 		
+		/* rafraîchit le CONTEXT SPRING. */
 		context.refresh();	
 		
 		personDAO = (IPersonDAO) context.getBean("PersonDAOJPASpring");
