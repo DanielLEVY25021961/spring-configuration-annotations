@@ -198,8 +198,11 @@ public class PersonDAOJPASpring implements IPersonDAO {
 		/* REQUETE HQL PARMETREE. */
 		requeteString 
 			= SELECT_OBJET
-				+ "where person.firstName = :pFirstName "
-				+ "and person.lastName = :pNom";
+				+ "where ((person.firstName IS NULL and :pFirstName IS NULL) OR (person.firstName = :pFirstName)) "
+				+ "and ((person.lastName IS NULL and :pLastName IS NUll) OR (person.lastName = :pLastName)) "
+				+ "and ((person.birthDate IS NULL and CAST(:pBirthDate AS date) IS NULL) OR (person.birthDate = :pBirthDate))";
+		
+		/* */
 		
 		/* Construction de la requête HQL. */
 		requete 
@@ -207,7 +210,8 @@ public class PersonDAOJPASpring implements IPersonDAO {
 		
 		/* Passage des paramètres de la requête HQL. */
 		requete.setParameter("pFirstName", pObject.getFirstName());
-		requete.setParameter("pNom", pObject.getLastName());
+		requete.setParameter("pLastName", pObject.getLastName());
+		requete.setParameter("pBirthDate", pObject.getBirthDate());
 		
 		return requete;
 				

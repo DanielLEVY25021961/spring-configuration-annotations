@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import levy.daniel.application.model.metier.person.IPerson;
 import levy.daniel.application.model.metier.person.impl.Person;
 import levy.daniel.application.model.persistence.metier.person.IPersonDAO;
 
@@ -99,7 +100,9 @@ public class MainApplication {
 	 * .setActiveProfiles("PROFIL_PROD_POSTGRES_SERVER");</b></code>
 	 * <br/>ATTENTION : Il est INDISPENSABLE de déclarer un Profile ACTIF 
 	 * si il existe plusieurs classes de Config avec différents profils 
-	 * dans le code.</li>
+	 * dans le code.<br/>
+	 * ATTENTION : toujours déclarer les profils actifs AVANT 
+	 * de register les éventuelles classes de Config SPRING.</li>
 	 * <li>enregistre éventuellement les classes de <i>Config SPRING</i>.
 	 * <br/>ATTENTION : si les classes de Config SPRING 
 	 * ne sont pas register ici, leurs annotations 
@@ -121,7 +124,9 @@ public class MainApplication {
 	 * <code><b>context.scan("packageAScanner")</b></code></li>
 	 * </ul>
 	 * <li>précise éventuellement dans quel Package SPRING 
-	 * doit chercher les COMPONENTS.</li>
+	 * doit chercher les COMPONENTS 
+	 * si on utilise pas de classe de Config SPRING.
+	 * <br/><code><b>context.scan(packageAScanner);</b></code></li>
 	 * </ol>
 	 */
 	private static void instancierContext() {
@@ -140,7 +145,8 @@ public class MainApplication {
 //		context.register(ConfigurateurSpringJPAPostgresServerEnDur.class);
 //		context.register(ConfigurateurSpringJPAH2MemoryEnDur.class);
 		
-		/* précise dans quel Package SPRING doit chercher les COMPONENTS. */
+		/* précise dans quel Package SPRING doit chercher les COMPONENTS 
+		 * si on utilise pas de classe de Config SPRING. */
 		context.scan("levy.daniel.application");
 		
 		context.refresh();	
@@ -349,13 +355,17 @@ public class MainApplication {
 	 */
 	private static void jouerJeuEssai() throws Exception {
 		
-		final Person person1 
+		IPerson personPersistente1 = null;
+		IPerson personPersistente2 = null;
+		IPerson personPersistente3 = null;
+		
+		final IPerson person1 
 			= new Person("firstName1", "LastName1", LocalDate.of(2019, 2, 22));
 		
-		final Person person2 
+		final IPerson person2 
 			= new Person(null, "LastName2", LocalDate.of(2019, 5, 29));
 		
-		final Person person3 
+		final IPerson person3 
 			= new Person(null, "LastName3", null);
 		
 //		final IPersonDAO personDAO = new PersonDAOJPASpring();
@@ -363,6 +373,15 @@ public class MainApplication {
 		personDAO.create(person1);
 		personDAO.create(person2);
 		personDAO.create(person3);
+		
+		personPersistente2 = personDAO.retrieve(person2);
+		personPersistente3 = personDAO.retrieve(person3);
+		
+		System.out.println("person2 : " + person2.toString());
+		System.out.println("personPersistente2 : " + personPersistente2.toString());
+		
+		System.out.println("person3 : " + person3.toString());
+		System.out.println("personPersistente3 : " + personPersistente3.toString());
 		
 	} // Fin de jouerJeuEssai().___________________________________________
 
